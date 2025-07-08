@@ -30,6 +30,9 @@ android {
         versionCode 1
         versionName "1.0"
 
+        buildConfigField "String", "WS_URL", "\"${WS_URL}\""
+        buildConfigField "String", "WS_API_KEY", "\"${WS_API_KEY}\""
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -107,4 +110,7 @@ dependencies {
 
     // MediaPipe Library
     implementation 'com.google.mediapipe:tasks-vision:0.10.14'
+
+    // OkHttp
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }

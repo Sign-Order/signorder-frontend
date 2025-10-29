@@ -19,6 +19,9 @@ import com.google.mediapipe.examples.handlandmarker.databinding.ActivityGeneralQ
 import com.google.mediapipe.examples.handlandmarker.fragment.CameraFragment
 
 class QuestionActivity : AppCompatActivity() {
+    private var bindingOrder: ActivityQuestionBinding? = null
+    private var bindingInquiry: ActivityGeneralQuestionBinding? = null
+
     private var countdownOverlay: FrameLayout? = null
     private var countdownText: android.widget.TextView? = null
     companion object {
@@ -30,73 +33,15 @@ class QuestionActivity : AppCompatActivity() {
         val layoutType = intent.getStringExtra("layoutType")
         when (layoutType) {
             "order" -> {
-                val binding = ActivityQuestionBinding.inflate(layoutInflater)
-                setContentView(binding.root)
-                Log.d("QuestionActivity", "onCreate: setContentView 완료 (order)")
-                countdownOverlay = binding.root.findViewById(R.id.countDownOverlay)
-                countdownText = binding.root.findViewById(R.id.countDownText)
-                startCountdown()
-
-                val backButton = binding.root.findViewById<ImageButton>(R.id.backButton)
-                backButton.setOnClickListener {
-                    onBackPressedDispatcher.onBackPressed()
-                }
-
-                setupSendButton(
-                    sendButton = binding.sendButton,
-                    containerId = R.id.order_fragment_container,
-                    inquiryType = "order"
-                )
-
-                val restRoomButton = findViewById<ImageButton>(R.id.restRoomButton)
-                val wifiButton = findViewById<ImageButton>(R.id.wifiButton)
-
-                restRoomButton.setOnClickListener {
-                    val intent = Intent(this, AnswerActivity::class.java)
-                    intent.putExtra("videoType", "restroom")
-                    startActivity(intent)
-                }
-
-                wifiButton.setOnClickListener {
-                    val intent = Intent(this, AnswerActivity::class.java)
-                    intent.putExtra("videoType", "wifi")
-                    startActivity(intent)
-                }
+                bindingOrder = ActivityQuestionBinding.inflate(layoutInflater)
+                setContentView(bindingOrder!!.root)
+                initOrderUI()
             }
 
             "inquiry" -> {
-                val binding = ActivityGeneralQuestionBinding.inflate(layoutInflater)
-                setContentView(binding.root)
-                Log.d("QuestionActivity", "onCreate: setContentView 완료 (inquiry)")
-                countdownOverlay = binding.root.findViewById(R.id.countDownOverlay)
-                countdownText = binding.root.findViewById(R.id.countDownText)
-                startCountdown()
-
-                val backButton = binding.root.findViewById<ImageButton>(R.id.backButton)
-                backButton.setOnClickListener {
-                    onBackPressedDispatcher.onBackPressed()
-                }
-
-                setupSendButton(
-                    sendButton = binding.sendButton,
-                    containerId = R.id.inquiry_fragment_container,
-                    inquiryType = "inquiry"
-                )
-
-                val restRoomButton = findViewById<ImageButton>(R.id.restRoomButton)
-                val wifiButton = findViewById<ImageButton>(R.id.wifiButton)
-
-                restRoomButton.setOnClickListener {
-                    val intent = Intent(this, AnswerActivity::class.java)
-                    intent.putExtra("videoType", "restroom")
-                    startActivity(intent)
-                }
-
-                wifiButton.setOnClickListener {
-                    val intent = Intent(this, AnswerActivity::class.java)
-                    intent.putExtra("videoType", "wifi")
-                    startActivity(intent)
-                }
+                bindingInquiry = ActivityGeneralQuestionBinding.inflate(layoutInflater)
+                setContentView(bindingInquiry!!.root)
+                initInquiryUI()
             }
 
             else -> {
@@ -106,9 +51,75 @@ class QuestionActivity : AppCompatActivity() {
         }
     }
 
+    private fun initOrderUI() {
+        bindingOrder?.apply {
+            countdownOverlay = root.findViewById(R.id.countDownOverlay)
+            countdownText = root.findViewById(R.id.countDownText)
+            startCountdown()
+
+            backButton.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+
+            setupSendButton(
+                sendButton = sendButton,
+                containerId = R.id.order_fragment_container,
+            )
+
+            val restRoomButton = findViewById<ImageButton>(R.id.restRoomButton)
+            val wifiButton = findViewById<ImageButton>(R.id.wifiButton)
+
+            restRoomButton.setOnClickListener {
+                val intent = Intent(this@QuestionActivity, AnswerActivity::class.java)
+                intent.putExtra("videoType", "restroom")
+                startActivity(intent)
+            }
+
+            wifiButton.setOnClickListener {
+                val intent = Intent(this@QuestionActivity, AnswerActivity::class.java)
+                intent.putExtra("videoType", "wifi")
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun initInquiryUI() {
+        bindingInquiry?.apply {
+            countdownOverlay = root.findViewById(R.id.countDownOverlay)
+            countdownText = root.findViewById(R.id.countDownText)
+            startCountdown()
+
+            backButton.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+
+            setupSendButton(
+                sendButton = sendButton,
+                containerId = R.id.inquiry_fragment_container,
+            )
+
+            val restRoomButton = findViewById<ImageButton>(R.id.restRoomButton)
+            val wifiButton = findViewById<ImageButton>(R.id.wifiButton)
+
+            restRoomButton.setOnClickListener {
+                val intent = Intent(this@QuestionActivity, AnswerActivity::class.java)
+                intent.putExtra("videoType", "restroom")
+                startActivity(intent)
+            }
+
+            wifiButton.setOnClickListener {
+                val intent = Intent(this@QuestionActivity, AnswerActivity::class.java)
+                intent.putExtra("videoType", "wifi")
+                startActivity(intent)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         checkCameraPermissionAndInit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bindingOrder = null
+        bindingInquiry = null
     }
 
     private fun checkCameraPermissionAndInit() {
@@ -127,8 +138,6 @@ class QuestionActivity : AppCompatActivity() {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
         }
     }
-
-
 
     private fun startCountdown(onFinish: () -> Unit = {}) {
         countdownOverlay?.visibility = View.VISIBLE
@@ -151,8 +160,10 @@ class QuestionActivity : AppCompatActivity() {
         handler.postDelayed(runnable, 1000)
     }
 
-    private fun setupSendButton(sendButton: View, containerId: Int, inquiryType: String) {
-        val inquiryNumber = intent.getIntExtra("inquiry_number", -1)
+    private fun setupSendButton(sendButton: View, containerId: Int) {
+        val inquiryNumber = WebSocketService.currentInquiryNum ?: -1
+        val inquiryType = WebSocketService.currentInquiryType ?: "inquiry"
+
         startCountdown{
             sendButton.setOnClickListener {
                 Log.d("QuestionActivity", "전송 버튼 클릭됨")
@@ -191,6 +202,7 @@ class QuestionActivity : AppCompatActivity() {
                         Log.d("GrpcLog", "frameData 길이 = ${frameData.size}")
                         Log.d("GrpcLog", "frameData 일부 = ${frameData.take(10)}")
                         Log.d("GrpcLog", "inquiryType = $inquiryType")
+                        Log.d("GrpcLog", "보내는 채팅방 번호: $inquiryNumber")
                         grpcClient.sendAllFrameData(
                             frameData = frameData,
                             inquiryType = inquiryType,

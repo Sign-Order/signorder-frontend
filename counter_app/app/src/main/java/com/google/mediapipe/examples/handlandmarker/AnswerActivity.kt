@@ -1,9 +1,9 @@
 package com.google.mediapipe.examples.handlandmarker
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 
 class AnswerActivity : AppCompatActivity() {
 
@@ -16,7 +16,7 @@ class AnswerActivity : AppCompatActivity() {
         signVideo = findViewById(R.id.signVideo)
 
         val backButton = findViewById<ImageButton>(R.id.backButton)
-        backButton.setOnClickListener{
+        backButton.setOnClickListener {
             if (!isFinishing) {
                 val intent = Intent(this, HomeActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -29,11 +29,14 @@ class AnswerActivity : AppCompatActivity() {
         val fastMessage = intent.getStringExtra("fast_message")
         val videoType = intent.getStringExtra("videoType")
 
+        // 결제해드릴게요, 예, 아니오, 잠시만 기다려주세요 부분 영상으로 추가하기
+        //        signVideo.setup(listOf(R.raw.video12_yes))
+        //        signVideo.setup(listOf(R.raw.video13_no))
+        //        signVideo.setup(listOf(R.raw.video14_pay))
         when {
             urls != null -> {
                 signVideo.setupWithUrls(urls)
             }
-
             fastMessage != null -> {
                 when (fastMessage) {
                     "네" -> signVideo.setup(listOf(R.raw.video13_yes))
@@ -42,7 +45,6 @@ class AnswerActivity : AppCompatActivity() {
                     "결제해드릴게요" -> signVideo.setup(listOf(R.raw.video16_pay))
                 }
             }
-
             videoType != null -> {
                 when (videoType) {
                     "restroom" -> signVideo.setup(listOf(R.raw.video10_quickqna_restroom))

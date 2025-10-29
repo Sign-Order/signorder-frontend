@@ -52,7 +52,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintDimensionRatio="3:4" />
+                app:layout_constraintDimensionRatio="1:1" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
@@ -74,13 +74,12 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⭕"
-                    android:textSize="32sp"
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_marginBottom="8dp"
-                    android:textColor="#555"/>
+                    android:src="@drawable/yes_button_icon_selector"
+                    android:contentDescription="desc_yes_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -103,13 +102,12 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="❌"
-                    android:textSize="32sp"
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_marginBottom="8dp"
-                    android:textColor="#fff"/>
+                    android:src="@drawable/no_button_icon_selector"
+                    android:contentDescription="desc_yes_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
